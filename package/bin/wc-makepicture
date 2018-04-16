@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#
+#  make picture script
+#
+# created by Vena <rak@webeye.services>
+# date 04/2018
+# web https://webeye.services
+#
+
+make_picture(){
+  . /var/lib/webcam/make-picture/venv/bin/activate
+  cd /var/lib/webcam/make-picture/src
+  python manage.py read_serial -c /etc/webcam/make-picture.yml
+}
+
+show_help(){
+  cat <<EOF
+Webeye.Services Make Picture
+============================
+
+ application what make camera picture
+
+Parameters:
+ $0 help:           show this help screen
+ $0 make_picture:     run daemon in systemd
+EOF
+
+}
+
+if [ -z "$*" ] ; then
+    show_help
+fi
+
+case "$1" in
+    make_picture) make_picture;;
+    help) show_help;;
+    *) echo 'unknown parameters' ;;
+esac

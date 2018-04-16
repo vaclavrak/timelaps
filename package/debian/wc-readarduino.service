@@ -1,0 +1,13 @@
+[Unit]
+Description=WebEye Make Picture service
+Documentation=https://webeye.services
+
+[Service]
+ExecStart=/usr/local/bin/wc-makepicture run-daemon
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
+[Install]
+WantedBy=multi-user.target
+

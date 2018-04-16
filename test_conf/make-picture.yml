@@ -1,0 +1,19 @@
+---
+#
+# make picture config
+#
+
+basic_picture: "/tmp/new.jpg"
+redis_light_key: "{hostname}:light:min"
+redis_power_state:
+
+data_resorces:
+  carbon:
+    host: "172.30.0.78"
+    port: 2003
+
+  redis:
+    host: "127.0.50.1"
+    port: 6379
+    database: 1
+  file: "True"

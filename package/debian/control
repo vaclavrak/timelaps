@@ -1,0 +1,15 @@
+Source: wc-makepicture
+Section: tools
+Priority: optional
+Maintainer: Vaclav Rak <rak@webwye.services>
+Build-Depends: debhelper (>=9),dh-python
+Standards-Version: 3.9.6
+Homepage: http://webeye.services/
+
+
+Package: wc-make-picture
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},python3 (>=3.1),python3-pip
+Description: make camera picture
+ <MAKE PICTURE\n==========================\n tool for image from camera >
+
