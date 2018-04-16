@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for image-postprocesor
+# prerm script for wc-make-picture
 #
 # see: dh_installdeb(1)
 
