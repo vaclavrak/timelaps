@@ -9,7 +9,7 @@ Homepage: http://webeye.services/
 
 Package: wc-make-picture
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends},python3 (>=3.1),python3-pip
+Depends: ${shlibs:Depends}, ${misc:Depends},python3 (>=3.1),python3-pip,libgphoto2-dev
 Description: make camera picture
  <MAKE PICTURE\n==========================\n tool for image from camera >
 
