@@ -9,7 +9,10 @@ redis_power_state_camera: "{hostname}:mini_ups:power_state:camera"
 redis_power_state_picture_ok: "{hostname}:mini_ups:voltage:make_picture_ok"
 redis_power_state_rpi: "{hostname}:mini_ups:voltage:power_state"
 
-redos_power
+light_shadow_limit: 2
+
+light_night_limit: 1
+
 data_resorces:
   carbon:
     host: "172.30.0.78"
@@ -19,7 +22,7 @@ data_resorces:
     host: "127.0.50.1"
     port: 6379
     database: 1
-  file: "True"
+
 
 
 serial:

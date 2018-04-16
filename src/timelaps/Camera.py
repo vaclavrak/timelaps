@@ -41,7 +41,7 @@ class Camera(object):
         return self
 
     def set_redis(self, red : redis.StrictRedis) -> object:
-        self._serial = red
+        self._redis = red
         return self
 
     def set_config(self, cfg: Configurator):
@@ -57,9 +57,9 @@ class Camera(object):
 
     @property
     def log(self) -> BasicLogData:
-        if self._config is None:
+        if self._bl is None:
             raise CameraError("Basic logger is not set, call set_logger first.")
-        return self._config
+        return self._bl
 
     @property
     def config(self) -> Configurator:
@@ -84,7 +84,7 @@ class Camera(object):
 
     def _serial_close(self):
         self.serial.close()
-        self._serial = None
+        # self._serial = None
 
     @property
     def is_on_battery(self):
@@ -100,7 +100,7 @@ class Camera(object):
         pok = self.config.get_kv("redis_power_state_picture_ok", "{hostname}:mini_ups:voltage:make_picture_ok")
         pok = pok.format(hostname=gethostname())
 
-        if float(self.redis.get(cps, 0)) == 0.0 and self.redis.get(pok, "0") == "0":
+        if float(self.redis.get(cps)) == 0.0 and self.redis.get(pok) == "0":
             return False
         return True
 
@@ -108,13 +108,13 @@ class Camera(object):
     def light(self):
         k = self.config.get_kv("redis_light_key", "{hostname}:light:min")
         k = k.format(hostname=gethostname())
-        return redis.get(k, 0)
+        return float(self.redis.get(k))
 
     def set_camera_power(self, state):
         if state is True:
-            self.serial.write('1/2/')
+            self.serial.write(bytes('1/2/', 'utf-8'))
         if state is False:
-            self.serial.write('1/3/')
+            self.serial.write(bytes('1/3/', 'utf-8'))
         self._serial_close()
 
     @property
@@ -145,7 +145,10 @@ class Camera(object):
 
     def make_photo(self, f_name, light):
         gpw = gPhotoWrapper(light, filename=f_name).set_logger(self.log)
-        gpw.optimize(shadow_threshold=settings.LIGHT_SHADOW_THRESHOLD, night_threshold=settings.LIGHT_NIGHT_THRESHOLD)
+        lsl = float(self.config.get_kv("light_shadow_limit"))
+        lnl = float(self.config.get_kv("light_night_limit"))
+
+        gpw.optimize(shadow_threshold=lsl, night_threshold=lnl)
 
         c = " ".join(gpw.command)
         logger.info(c)

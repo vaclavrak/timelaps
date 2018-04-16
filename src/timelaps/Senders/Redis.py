@@ -1,6 +1,6 @@
 
 
-from arduino_serial.Senders.BasicSender import Sender
+from timelaps.Senders.BasicSender import Sender
 import redis
 
 

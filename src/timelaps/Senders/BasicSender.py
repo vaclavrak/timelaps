@@ -3,7 +3,7 @@ from abc import abstractmethod
 from locale import str
 from time import time
 import socket
-from arduino_serial.Controller import Configurator
+from timelaps.Controller import Configurator
 
 
 class SenderException(Exception):

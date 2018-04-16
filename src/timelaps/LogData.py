@@ -5,6 +5,7 @@ from timelaps.Controller import  Configurator
 class BasicLogDataException(Exception):
     pass
 
+
 class BasicLogData(object):
     _k = {}
     _config = None
@@ -34,4 +35,4 @@ class BasicLogData(object):
             sender_cls = src_class().set_config(self.config).setup()
             for k in self._k:
                 sender_cls.send_data(k, self._k[k], k)
-            sender_cls.flush()
+            sender_cls.flush({})
