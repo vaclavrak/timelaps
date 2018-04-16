@@ -16,7 +16,7 @@ from socket  import gethostname
 from serial import Serial
 from timelaps.Controller import  Configurator
 from timelaps.LogData import BasicLogData
-logger = getLogger("webapp.timelapscam")
+logger = getLogger("core")
 
 
 class CameraError(Exception):

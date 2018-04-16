@@ -3,7 +3,7 @@ __author__ = 'rak'
 
 from logging import getLogger
 from timelaps.LogData import BasicLogData
-logger = getLogger("webapp.timelapscam")
+logger = getLogger("core")
 
 
 class gPhotoWrapperException(Exception):
