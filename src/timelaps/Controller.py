@@ -18,6 +18,7 @@ class Configurator(object):
     _context = {}
     _i = None
     _wt = None
+    _watch = True
 
     def __init__(self):
         self._src = None
@@ -25,6 +26,7 @@ class Configurator(object):
         self._context = {}
         self._i = None
         self._wt = None
+        self._watch = True
 
     def get_kv(self, slash_key, def_val = None):
         keys = slash_key.split("/")
@@ -109,11 +111,15 @@ class Configurator(object):
 
             with open(self._src, "r") as f:
                 self._yml = yaml.load(f)
-            if self._wt is None:
+            if self._watch is True and self._wt is None:
                 self._wt = threading.Thread(target=self.watch_config_change)
                 self._wt.start()
 
         return self._yml
+
+    def set_watch(self, w:bool = True) -> object:
+        self._watch = w
+        return self
 
     def read(self, f_name):
         self._src = f_name

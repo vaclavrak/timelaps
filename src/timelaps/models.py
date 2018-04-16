@@ -41,7 +41,7 @@ def make_picture(config: Configurator, bl: BasicLogData, cam: Camera) -> bool:
         return False
 
     cam.make_photo(f_name, light)
-    exif_log(f_name)
+    exif_log(config,bl)
     bl.add("camera.make_time", (datetime.now() - t).seconds)
     return True
 

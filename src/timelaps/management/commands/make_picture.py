@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         conf = options['config']
-        config = Configurator().read(conf)
+        config = Configurator().set_watch(False).read(conf)
         bl = BasicLogData().set_config(config)
 
         serial_com = config.get_kv("serial/device")
