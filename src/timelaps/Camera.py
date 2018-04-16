@@ -15,7 +15,7 @@ import redis
 from socket  import gethostname
 from serial import Serial
 from timelaps.Controller import  Configurator
-
+from timelaps.LogData import BasicLogData
 logger = getLogger("webapp.timelapscam")
 
 
@@ -27,13 +27,14 @@ class Camera(object):
     _serial = None
     _redis = None
     _config = None
-    # gPhoto2 camera list
+    _bl  = None
     _cameras = None
 
     def __init__(self):
         self._serial = None
         self._redis = None
         self._config = None
+        self._bl = None
 
     def set_serial(self, ser : Serial) -> object:
         self._serial = ser
@@ -49,8 +50,21 @@ class Camera(object):
         self._config = cfg
         return self
 
+    def set_logger(self, bl: BasicLogData) -> object:
+        self._bl = bl
+        return self
+
+
+    @property
+    def log(self) -> BasicLogData:
+        if self._config is None:
+            raise CameraError("Basic logger is not set, call set_logger first.")
+        return self._config
+
     @property
     def config(self) -> Configurator:
+        if self._config is None:
+            raise CameraError("Config is not set, call set_config first.")
         return self._config
 
 
@@ -74,19 +88,25 @@ class Camera(object):
 
     @property
     def is_on_battery(self):
-        return cache.get("power-state", False) == 0
+        rps = self.config.get_kv("redis_power_state_rpi", "{hostname}:mini_ups:voltage:power_state")
+        rps = rps.format(hostname=gethostname())
+        return float(self.redis.get(rps, 0)) == 0.0
 
     @property
     def is_power_ok(self):
-        k = self.config.get_kv("redis_light_key", "{hostname}.light.min")
+        cps = self.config.get_kv("redis_power_state_camera", "{hostname}:mini_ups:power_state:camera")
+        cps = cps.format(hostname=gethostname())
 
-        if cache.get("power-state", 0) == 0 and cache.get("power-state-picture-ok", 0) == 0:
+        pok = self.config.get_kv("redis_power_state_picture_ok", "{hostname}:mini_ups:voltage:make_picture_ok")
+        pok = pok.format(hostname=gethostname())
+
+        if float(self.redis.get(cps, 0)) == 0.0 and self.redis.get(pok, "0") == "0":
             return False
         return True
 
     @property
     def light(self):
-        k = self.config.get_kv("redis_light_key", "{hostname}.light.min")
+        k = self.config.get_kv("redis_light_key", "{hostname}:light:min")
         k = k.format(hostname=gethostname())
         return redis.get(k, 0)
 
@@ -124,7 +144,7 @@ class Camera(object):
         return found_device
 
     def make_photo(self, f_name, light):
-        gpw = gPhotoWrapper(light, filename=f_name)
+        gpw = gPhotoWrapper(light, filename=f_name).set_logger(self.log)
         gpw.optimize(shadow_threshold=settings.LIGHT_SHADOW_THRESHOLD, night_threshold=settings.LIGHT_NIGHT_THRESHOLD)
 
         c = " ".join(gpw.command)

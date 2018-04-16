@@ -7,13 +7,10 @@
 
  make picture and store it in Rmq or filesystem
 
-
 """
 
-
 from django.core.management.base import BaseCommand
-from django.conf import settings
-from timelaps.models import make_picture, send_picture
+from timelaps.models import make_picture
 from timelaps.Controller import  Configurator
 from timelaps.LogData import BasicLogData
 from timelaps.Camera import Camera
@@ -49,7 +46,7 @@ class Command(BaseCommand):
         r = redis.StrictRedis(host=red_host, port=red_port, db=red_db)
 
         cam = Camera()
-        cam.set_serial(ser).set_redis(r)
+        cam.set_serial(ser).set_redis(r).set_config(config).set_logger(bl)
         make_picture(config, bl, cam)
         # if make_picture(config, bl, cam):
         #     send_picture(config, bl)

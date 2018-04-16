@@ -5,8 +5,11 @@
 
 basic_picture: "/tmp/new.jpg"
 redis_light_key: "{hostname}:light:min"
-redis_power_state:
+redis_power_state_camera: "{hostname}:mini_ups:power_state:camera"
+redis_power_state_picture_ok: "{hostname}:mini_ups:voltage:make_picture_ok"
+redis_power_state_rpi: "{hostname}:mini_ups:voltage:power_state"
 
+redos_power
 data_resorces:
   carbon:
     host: "172.30.0.78"

@@ -2,9 +2,12 @@ __author__ = 'rak'
 
 
 from logging import getLogger
-
+from timelaps.LogData import BasicLogData
 logger = getLogger("webapp.timelapscam")
-td_logger = getLogger("camera.fluent")
+
+
+class gPhotoWrapperException(Exception):
+    pass
 
 
 class gPhotoWrapper(object):
@@ -21,6 +24,7 @@ class gPhotoWrapper(object):
     _capture_image_and_download = True
     _force_overwrite = True
     _shutter_speed = None
+    _bl = None
 
     def __init__(self, light, capture="on", shootingmode=0, iso=1, assistlight=0, whitebalance=0,
                  flashmode=4, filename="online.jpg", capture_image_and_download=True, force_overwrite=True,
@@ -36,39 +40,45 @@ class gPhotoWrapper(object):
         self.capture_image_and_download(capture_image_and_download)
         self.force_overwrite(force_overwrite)
         self.shutter_speed(shutterspeed)
+        self._bl = None
+
+    def set_logger(self, bl:BasicLogData) -> object:
+        self._bl = bl
+        return self
+
+    @property
+    def logger(self)->BasicLogData:
+        if self._bl is None:
+            raise gPhotoWrapperException("No logger specified, call set_logger first.")
+        return self._bl
 
     def optimize(self, shadow_threshold=5, night_threshold=0):
         if self._light >= shadow_threshold:
             logger.info("It's day, light %d >= shadow %d " % (self._light, shadow_threshold))
-            td_logger.info({"camera.gPhotoWrapper.day": 1, "camera.gPhotoWrapper.shadow": 0,
-                            "camera.gPhotoWrapper.night": 0})
-            statsd.gauge("camera.gPhotoWrapper.day", 1)
-            statsd.gauge("camera.gPhotoWrapper.night", 0)
-            statsd.gauge("camera.gPhotoWrapper.shadow", 0)
+            self.logger.add("camera.gPhotoWrapper.day", 1)
+            self.logger.add("camera.gPhotoWrapper.night", 0)
+            self.logger.add("camera.gPhotoWrapper.shadow", 0)
         elif self._light > night_threshold:
             logger.info("It's shadow, light %d >= night %d " % (self._light, night_threshold))
-            td_logger.info({"camera.gPhotoWrapper.day": 0, "camera.gPhotoWrapper.shadow": 1,
-                            "camera.gPhotoWrapper.night": 0})
-            statsd.gauge("camera.gPhotoWrapper.day", 0)
-            statsd.gauge("camera.gPhotoWrapper.night", 0)
-            statsd.gauge("camera.gPhotoWrapper.shadow", 1)
+            self.logger.add("camera.gPhotoWrapper.day", 0)
+            self.logger.add("camera.gPhotoWrapper.night", 0)
+            self.logger.add("camera.gPhotoWrapper.shadow", 1)
             self.shootingmode(1)
             self.shutter_speed(6)
             self.whitebalance(None)
             self.flashmode(4)
             self.assistlight(1)
         else:
-            td_logger.info({"camera.gPhotoWrapper.day": 0, "camera.gPhotoWrapper.shadow": 0,
-                            "camera.gPhotoWrapper.night": 1})
-            statsd.gauge("camera.gPhotoWrapper.day", 0)
-            statsd.gauge("camera.gPhotoWrapper.night", 1)
-            statsd.gauge("camera.gPhotoWrapper.shadow", 0)
+            self.logger.add("camera.gPhotoWrapper.day", 0)
+            self.logger.add("camera.gPhotoWrapper.night", 1)
+            self.logger.add("camera.gPhotoWrapper.shadow", 0)
             self.shootingmode(1)
             self.shutter_speed(0)
             self.whitebalance(None)
             self.flashmode(4) #
             self.assistlight(1)
             self.iso(0)
+        self.logger.flush()
 
     @property
     def command(self):
@@ -103,11 +113,11 @@ class gPhotoWrapper(object):
             "camera.gPhotoWrapper.flash_mode": self._flash_mode,
             "camera.gPhotoWrapper.shutter_speed": self._shutter_speed
         }
-        td_logger.info(d)
         for k in d:
             if d[k] is None:
                 continue
-            statsd.gauge(k, d[k])
+            self.logger.add(k, d[k])
+        self.logger.flush()
         return cmd
 
     def shutter_speed(self, v):
