@@ -19,7 +19,7 @@ class BasicLogData(object):
         self._k[kk] = m
         self._v[kk] = v
         return self
-    
+
     def set_config(self, cfg: Configurator):
         if not isinstance(cfg, Configurator):
             raise BasicLogDataException("Invalid config type")
