@@ -1,5 +1,5 @@
 src/ var/lib/webcam/make-picture
 package/bin/ var/lib/webcam/make-picture
-package/etc/ etc/
+package/etc/webcam/make-picture.yml.example /etc/webcam/make-picture.yml.example
 requirements.txt var/lib/webcam/make-picture
 #debian/wc-makepicture.service /lib/systemd/system/

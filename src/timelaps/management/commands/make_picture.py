@@ -26,8 +26,8 @@ class Command(BaseCommand):
     image_archive = None
 
     def add_arguments(self, parser):
-        parser.add_argument('--cnf', '-c', dest='config',  default="/etc/webcam/make-picture.yml.example",
-                            help='config file default is /etc/webcam/make-picture.yml.example')
+        parser.add_argument('--cnf', '-c', dest='config',  default="/etc/webcam/make-picture.yml",
+                            help='config file default is /etc/webcam/make-picture.yml')
 
     def __init__(self):
         super(Command, self).__init__()
@@ -42,9 +42,9 @@ class Command(BaseCommand):
 
         ser = Serial(serial_com, serial_speed)
 
-        red_host = self.config.get_kv("data_resorces/redis/host", "localhost")
-        red_port = self.config.get_kv("data_resorces/redis/port", 6379)
-        red_db = self.config.get_kv("data_resorces/redis/database", 0)
+        red_host = config.get_kv("data_resorces/redis/host", "localhost")
+        red_port = config.get_kv("data_resorces/redis/port", 6379)
+        red_db = config.get_kv("data_resorces/redis/database", 0)
 
         r = redis.StrictRedis(host=red_host, port=red_port, db=red_db)
 

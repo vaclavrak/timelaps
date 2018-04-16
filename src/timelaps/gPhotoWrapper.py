@@ -2,7 +2,6 @@ __author__ = 'rak'
 
 
 from logging import getLogger
-from statsd.defaults.django import statsd
 
 logger = getLogger("webapp.timelapscam")
 td_logger = getLogger("camera.fluent")

@@ -10,7 +10,7 @@
 make_picture(){
   . /var/lib/webcam/make-picture/venv/bin/activate
   cd /var/lib/webcam/make-picture/src
-  python manage.py read_serial -c /etc/webcam/make-picture.yml
+  python manage.py make_picture -c /etc/webcam/make-picture.yml
 }
 
 show_help(){

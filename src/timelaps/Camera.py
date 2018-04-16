@@ -13,6 +13,8 @@ import subprocess
 from logging import getLogger
 import redis
 from socket  import gethostname
+from serial import Serial
+from timelaps.Controller import  Configurator
 
 logger = getLogger("webapp.timelapscam")
 
@@ -24,13 +26,14 @@ class CameraError(Exception):
 class Camera(object):
     _serial = None
     _redis = None
-
+    _config = None
     # gPhoto2 camera list
     _cameras = None
 
     def __init__(self):
         self._serial = None
         self._redis = None
+        self._config = None
 
     def set_serial(self, ser : Serial) -> object:
         self._serial = ser
@@ -39,6 +42,17 @@ class Camera(object):
     def set_redis(self, red : redis.StrictRedis) -> object:
         self._serial = red
         return self
+
+    def set_config(self, cfg: Configurator):
+        if not isinstance(cfg, Configurator):
+            raise CameraError("Invalid config type")
+        self._config = cfg
+        return self
+
+    @property
+    def config(self) -> Configurator:
+        return self._config
+
 
     @property
     def serial(self):
