@@ -82,22 +82,22 @@ def exif_log(config: Configurator, bl: BasicLogData):
     f = open(f_name, 'rb')
     tags = exifread.process_file(f)
     data = {
-        ["camera", "exif", "ApertureValue"]: str(tags.get('EXIF ApertureValue', 'not-set')),
-        ["camera", "exif", "ExposureTime"]: _div(str(tags.get('EXIF ExposureTime', '0'))),
-        ["camera", "exif", "FocalLength"]: _div(str(tags.get('EXIF FocalLength', '0'))),
-        ["camera", "exif", "ShutterSpeedValue"]: _div(str(tags.get('EXIF ShutterSpeedValue', '0'))),
-        ["camera", "exif", "ShutterSpeedValue"]: _div(str(tags.get('EXIF ShutterSpeedValue', '0'))),
-        ["camera", "exif", "ISOSpeedRatings"]: str(tags.get('EXIF ISOSpeedRatings', 'not-set')),
-        ["camera", "exif", "FNumber"]: str(tags.get('EXIF FNumber', 'not-set')),
-        ["camera", "exif", "MeteringMode", "%s" % str(tags.get('EXIF MeteringMode', 'not-set'))]: 1,
-        ["camera", "exif", "SceneCaptureType", "%s" % str(tags.get('EXIF SceneCaptureType', 'not-set'))]: 1
+        "camera.exif.ApertureValue": str(tags.get('EXIF ApertureValue', 'not-set')),
+        "camera.exif.ExposureTime": _div(str(tags.get('EXIF ExposureTime', '0'))),
+        "camera.exif.FocalLength": _div(str(tags.get('EXIF FocalLength', '0'))),
+        "camera.exif.ShutterSpeedValue": _div(str(tags.get('EXIF ShutterSpeedValue', '0'))),
+        "camera.exif.ShutterSpeedValue": _div(str(tags.get('EXIF ShutterSpeedValue', '0'))),
+        "camera.exif.ISOSpeedRatings": str(tags.get('EXIF ISOSpeedRatings', 'not-set')),
+        "camera.exif.FNumber": str(tags.get('EXIF FNumber', 'not-set')),
+        "camera.exif.MeteringMode.%s" % str(tags.get('EXIF MeteringMode', 'not-set')): 1,
+        "camera.exif.SceneCaptureType.%s" % str(tags.get('EXIF SceneCaptureType', 'not-set')): 1
     }
 
     for k in data:
         m = re.compile(r"([0-9]*)/([0-9]*)").match("%s" % data[k])
         if m:
-            bl.add(k, float(m.group(1)) / float(m.group(2)))
+            bl.add(k.split("."), float(m.group(1)) / float(m.group(2)))
         else:
-            bl.add(k, data[k])
+            bl.add(k.split("."), data[k])
     bl.flush()
     f.close()
