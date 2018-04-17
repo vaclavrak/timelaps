@@ -26,6 +26,7 @@ make_picture_interval(){
       start_t=$( date +"%s" )
       make_picture
       while [ $(( $(date +"%s") - $start_t ))  -le  $2 ]
+      do
         sleep 1
       done
     done

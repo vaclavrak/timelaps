@@ -5,7 +5,7 @@ Requires=wc-readarduino.service
 After=wc-readarduino.service
 
 [Service]
-EnvironmentFile=-/etc/sysconfig/wc-makepicture
+EnvironmentFile=-/etc/default/wc-makepicture
 ExecStart=/usr/local/bin/wc-makepicture $OPTIONS
 Restart=on-failure
 StartLimitBurst=3
