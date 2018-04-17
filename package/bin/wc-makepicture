@@ -43,6 +43,10 @@ Parameters:
  $0 help:             show this help screen
  $0 make_picture:     make one picture
  $0 interval N:       repeat picture in interval (seconds)
+ $0 status:           show systemd status of wc-makepicture.service
+ $0 logs:             view logs in follow mode
+ $0 restart:          restart daemon
+
 EOF
 
 }
@@ -54,6 +58,9 @@ fi
 case "$1" in
     make_picture) make_picture;;
     interval) make_picture_interval $@;;
+    status) systemctl status wc-makepicture.service ;;
+    logs) journalctl -u wc-makepicture.service -n -f;;
+    restart) systemctl restart wc-readarduino.service ;;
     help) show_help;;
     *) echo 'unknown parameters' ;;
 esac
