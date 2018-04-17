@@ -19,7 +19,12 @@ set -e
 
 configure()
 {
-    systemctl stop wc-makepicture.service
+    ac=$(systemctl is-active wc-makepicture.service)
+
+    if [[ "$ac" -eq "active" ]]; then
+        systemctl stop wc-makepicture.service
+    fi
+
 	app_name="make-picture"
 	mkdir /etc/webcam/$app_name.d -p
 	cd /var/lib/webcam/$app_name; 
