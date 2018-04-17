@@ -1,5 +1,6 @@
 src/ var/lib/webcam/make-picture
 package/bin/ var/lib/webcam/make-picture
-package/etc etc/
+package/etc/webcam/ etc/webcam/
+package/etc/default/ etc/default/
 requirements.txt var/lib/webcam/make-picture
 debian/wc-makeimage.service /lib/systemd/system/
