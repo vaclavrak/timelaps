@@ -1,0 +1,7 @@
+#
+# default options for wc-makepicture.service
+#
+
+
+OPTIONS="interval 60"
+

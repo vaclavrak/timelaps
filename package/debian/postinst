@@ -19,7 +19,7 @@ set -e
 
 configure()
 {
-
+    systemctl stop wc-makepicture.service
 	app_name="make-picture"
 	mkdir /etc/webcam/$app_name.d -p
 	cd /var/lib/webcam/$app_name; 
@@ -30,8 +30,9 @@ configure()
 	pip3 install -r requirements.txt
 	chmod +x /var/lib/webcam/$app_name/bin/wc-makepicture
 	ln -sf /var/lib/webcam/$app_name/bin/wc-makepicture /usr/local/bin/wc-makepicture
-	#systemctl daemon-reload
-    #systemctl enable wc-makepicture.service
+	ln -sf /etc/sysconfig/wc-makepicture /etc/webcam/wc-makepicture.environment
+	systemctl daemon-reload
+    systemctl enable wc-makepicture.service
 }
 
 

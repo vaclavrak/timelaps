@@ -1,0 +1,16 @@
+[Unit]
+Description=WebEye make image
+Documentation=https://webeye.services
+Requires=wc-readarduino.service
+After=wc-readarduino.service
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/wc-makepicture
+ExecStart=/usr/local/bin/wc-makepicture $OPTIONS
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
+[Install]
+WantedBy=multi-user.target
+

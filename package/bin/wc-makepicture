@@ -14,15 +14,20 @@ make_picture(){
 }
 
 make_picture_interval(){
-    if [ -z "$1" ]
+    echo $@
+
+    if [ -z "$2" ]
       then
         echo "number of seconds is expected"
         return 1
     fi
     while true;
     do
+      start_t=$( date +"%s" )
       make_picture
-      sleep $1
+      while [ $(( $(date +"%s") - $start_t ))  -le  $2 ]
+        sleep 1
+      done
     done
 }
 
