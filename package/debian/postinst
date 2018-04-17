@@ -19,11 +19,11 @@ set -e
 
 configure()
 {
-    ac=$(systemctl is-active wc-makepicture.service)
+    #ac=$(systemctl is-active wc-makepicture.service)
 
-    if [[ "$ac" -eq "active" ]]; then
-        systemctl stop wc-makepicture.service
-    fi
+    #if [[ "$ac" -eq "active" ]]; then
+    #   systemctl stop wc-makepicture.service
+    #fi
 
 	app_name="make-picture"
 	mkdir /etc/webcam/$app_name.d -p
@@ -35,7 +35,7 @@ configure()
 	pip3 install -r requirements.txt
 	chmod +x /var/lib/webcam/$app_name/bin/wc-makepicture
 	ln -sf /var/lib/webcam/$app_name/bin/wc-makepicture /usr/local/bin/wc-makepicture
-	ln -sf /etc/sysconfig/wc-makepicture /etc/webcam/wc-makepicture.environment
+	ln -sf /etc/default/wc-makepicture /etc/webcam/wc-makepicture.environment
 	systemctl daemon-reload
     systemctl enable wc-makepicture.service
 }
@@ -43,7 +43,7 @@ configure()
 
 case "$1" in
     configure)
-	configure
+	    configure
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
