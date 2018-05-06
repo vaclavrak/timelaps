@@ -1,13 +1,11 @@
 import re
 from datetime import datetime
 from logging import getLogger
-from time import sleep
 from timelaps.LogData import BasicLogData
 from timelaps.Controller import  Configurator
 import exifread
 
 from timelaps.Camera import Camera
-from timelaps.Delivery.SendRabbitMq import SendImageRmq
 
 logger = getLogger("webapp.timelapscam")
 bl = BasicLogData()
@@ -44,36 +42,6 @@ def make_picture(config: Configurator, bl: BasicLogData, cam: Camera) -> bool:
     exif_log(config,bl)
     bl.add("camera.make_time", (datetime.now() - t).seconds)
     return True
-
-
-def panorama_image(img_tmpl, ser, start, stop, no_iteration, sleep_time=10):
-    # calibrate
-    ser.write("2/5/")
-    ser.flush()
-    sleep(sleep_time)
-    step = (stop - start) / no_iteration
-    for i in range(0, no_iteration):
-        if i == 0:
-            ser.write("2/6/%d/" % start)
-            ser.flush()
-            sleep(sleep_time)
-        if i > 0:
-            ser.write("2/9/%d/" % step)
-            ser.flush()
-            sleep(sleep_time)
-        f_name = img_tmpl.format(i=i +1, iter=no_iteration)
-
-        make_picture(f_name)
-        send_picture(f_name)
-    ser.close()
-
-
-def send_picture(config):
-    f_name = config.get_kv("basic_picture")
-
-    delivery = SendImageRmq()
-    if delivery.is_free_to_send():
-        delivery.send_file(f_name=f_name)
 
 
 def exif_log(config: Configurator, bl: BasicLogData):
