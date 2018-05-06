@@ -45,6 +45,8 @@ Parameters:
  $0 interval N:       repeat picture in interval (seconds)
  $0 status:           show systemd status of wc-makepicture.service
  $0 logs:             view logs in follow mode
+ $0 stop:             stop daemon
+ $0 start:            start daemon
  $0 restart:          restart daemon
 
 EOF
@@ -60,6 +62,8 @@ case "$1" in
     interval) make_picture_interval $@;;
     status) systemctl status wc-makepicture.service ;;
     logs) journalctl -u wc-makepicture.service -n -f;;
+    stop) systemctl stop wc-readarduino.service ;;
+    start) systemctl start wc-readarduino.service ;;
     restart) systemctl restart wc-readarduino.service ;;
     help) show_help;;
     *) echo 'unknown parameters' ;;
