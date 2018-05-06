@@ -69,6 +69,7 @@ class gPhotoWrapper(object):
             self.flashmode(4)
             self.assistlight(1)
         else:
+            logger.info("It's night, light %d <= night %d " % (self._light, night_threshold))
             self.logger.add(["camera", "gPhotoWrapper", "day"], 0)
             self.logger.add(["camera", "gPhotoWrapper", "night"], 1)
             self.logger.add(["camera", "gPhotoWrapper", "shadow"], 0)
